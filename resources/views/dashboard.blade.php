@@ -20,14 +20,14 @@
             </div>
             <div class="step-line {{ $hasMahasiswa ? 'completed' : '' }}"></div>
             <div class="step">
-                <div class="step-circle {{ $hasPenilaian ? 'completed' : ($hasMahasiswa ? 'active' : '') }}">
-                    @if($hasPenilaian) ✓ @else 2 @endif
+                <div class="step-circle {{ $hasNilai ? 'completed' : ($hasMahasiswa ? 'active' : '') }}">
+                    @if($hasNilai) ✓ @else 2 @endif
                 </div>
-                <span style="font-size: 0.8rem; color: var(--text-secondary);">Penilaian</span>
+                <span style="font-size: 0.8rem; color: var(--text-secondary);">Nilai Mata Kuliah</span>
             </div>
-            <div class="step-line {{ $hasPenilaian ? 'completed' : '' }}"></div>
+            <div class="step-line {{ $hasNilai ? 'completed' : '' }}"></div>
             <div class="step">
-                <div class="step-circle {{ $hasHasil ? 'completed' : ($hasPenilaian ? 'active' : '') }}">
+                <div class="step-circle {{ $hasHasil ? 'completed' : ($hasNilai ? 'active' : '') }}">
                     @if($hasHasil) ✓ @else 3 @endif
                 </div>
                 <span style="font-size: 0.8rem; color: var(--text-secondary);">Hasil</span>
@@ -60,12 +60,12 @@
         <div style="font-size: 1.1rem; font-weight: 700;">{{ $mahasiswa->prodi }}</div>
     </div>
     <div class="stat-card">
-        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Status Penilaian</div>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Status Nilai</div>
         <div style="margin-top: 4px;">
-            @if($hasPenilaian)
-                <span class="badge badge-success">✅ Sudah Dinilai</span>
+            @if($hasNilai)
+                <span class="badge badge-success">✅ Sudah Diisi</span>
             @else
-                <span class="badge badge-warning">⏳ Belum Dinilai</span>
+                <span class="badge badge-warning">⏳ Belum Diisi</span>
             @endif
         </div>
     </div>
@@ -127,21 +127,21 @@
         🧮 Detail Perhitungan TOPSIS
     </a>
 </div>
-@elseif(!$hasPenilaian)
+@elseif(!$hasNilai)
 <div class="card fade-in fade-in-delay-2" style="text-align: center; padding: 48px;">
     <div style="font-size: 3rem; margin-bottom: 16px;">📝</div>
-    <h3 style="font-weight: 700; margin-bottom: 8px;">Lanjutkan ke Penilaian</h3>
-    <p style="color: var(--text-secondary); margin-bottom: 24px;">Data mahasiswa sudah lengkap. Sekarang berikan penilaian untuk setiap alternatif karir.</p>
-    <a href="{{ route('penilaian.create') }}" class="btn-primary">
-        Mulai Penilaian →
+    <h3 style="font-weight: 700; margin-bottom: 8px;">Lanjutkan ke Input Nilai</h3>
+    <p style="color: var(--text-secondary); margin-bottom: 24px;">Data mahasiswa sudah lengkap. Sekarang masukkan nilai mata kuliah Anda.</p>
+    <a href="{{ route('nilai.create') }}" class="btn-primary">
+        Mulai Input Nilai →
     </a>
 </div>
 @else
 <div class="card fade-in fade-in-delay-2" style="text-align: center; padding: 48px;">
     <div style="font-size: 3rem; margin-bottom: 16px;">🧮</div>
-    <h3 style="font-weight: 700; margin-bottom: 8px;">Penilaian Sudah Selesai!</h3>
+    <h3 style="font-weight: 700; margin-bottom: 8px;">Nilai Sudah Lengkap!</h3>
     <p style="color: var(--text-secondary); margin-bottom: 24px;">Hitung rekomendasi karir Anda menggunakan metode TOPSIS.</p>
-    <form action="{{ route('penilaian.calculate') }}" method="POST" style="display: inline;">
+    <form action="{{ route('nilai.calculate') }}" method="POST" style="display: inline;">
         @csrf
         <button type="submit" class="btn-primary">
             🚀 Hitung Rekomendasi Sekarang
@@ -153,19 +153,25 @@
 
 <!-- Bobot Kriteria -->
 <div class="card fade-in fade-in-delay-4" style="margin-top: 28px;">
-    <h3 style="font-weight: 700; margin-bottom: 16px;">⚖️ Bobot Kriteria (AHP)</h3>
+    <h3 style="font-weight: 700; margin-bottom: 16px;">📚 Mata Kuliah</h3>
+    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px;">
+        Total {{ $kriteria->count() }} mata kuliah yang digunakan untuk perhitungan rekomendasi karir
+    </p>
     <div class="grid-4">
-        @foreach($kriteria as $k)
-        <div style="text-align: center; padding: 16px;">
-            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">{{ $k->kode }}</div>
-            <div style="font-weight: 700; margin-bottom: 8px;">{{ $k->nama }}</div>
-            <div style="width: 100%; height: 6px; background: rgba(99,102,241,0.1); border-radius: 3px; overflow: hidden;">
-                <div style="width: {{ $k->bobot * 100 }}%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px;"></div>
-            </div>
-            <div style="font-size: 0.85rem; font-weight: 600; color: var(--primary-light); margin-top: 4px;">{{ number_format($k->bobot * 100, 2) }}%</div>
+        @foreach($kriteria->take(8) as $k)
+        <div style="text-align: center; padding: 12px; background: rgba(99,102,241,0.05); border-radius: 12px;">
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">{{ $k->kode }}</div>
+            <div style="font-weight: 600; font-size: 0.85rem;">{{ $k->nama }}</div>
         </div>
         @endforeach
     </div>
+    @if($kriteria->count() > 8)
+    <div style="text-align: center; margin-top: 16px;">
+        <a href="{{ route('nilai.create') }}" class="link-primary" style="font-size: 0.85rem;">
+            Lihat semua mata kuliah →
+        </a>
+    </div>
+    @endif
 </div>
 @endsection
 

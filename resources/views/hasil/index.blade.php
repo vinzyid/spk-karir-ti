@@ -102,8 +102,8 @@
     <a href="{{ route('hasil.detail') }}" class="btn-primary">
         🧮 Lihat Detail Perhitungan TOPSIS
     </a>
-    <a href="{{ route('penilaian.create') }}" class="btn-secondary">
-        ✏️ Ubah Penilaian
+    <a href="{{ route('nilai.create') }}" class="btn-secondary">
+        ✏️ Ubah Nilai Mata Kuliah
     </a>
     <a href="{{ route('dashboard') }}" class="btn-secondary">
         ← Kembali ke Dashboard

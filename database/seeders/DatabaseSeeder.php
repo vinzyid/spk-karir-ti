@@ -10,8 +10,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminSeeder::class,
-            KriteriaSeeder::class,
-            AlternatifSeeder::class,
+            MataKuliahSeeder::class,  // Mata kuliah (kriteria)
+            AlternatifSeeder::class,   // Karir
+            BobotKarirSeeder::class,   // Bobot mata kuliah untuk setiap karir
         ]);
     }
 }

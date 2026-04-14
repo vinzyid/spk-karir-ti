@@ -30,7 +30,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/mahasiswa', [MahasiswaController::class, 'create'])->name('mahasiswa.create');
     Route::post('/mahasiswa', [MahasiswaController::class, 'store'])->name('mahasiswa.store');
 
-    // Penilaian
+    // Nilai Mata Kuliah (NEW)
+    Route::get('/nilai', [\App\Http\Controllers\NilaiMahasiswaController::class, 'create'])->name('nilai.create');
+    Route::post('/nilai', [\App\Http\Controllers\NilaiMahasiswaController::class, 'store'])->name('nilai.store');
+    Route::post('/nilai/calculate', [\App\Http\Controllers\NilaiMahasiswaController::class, 'calculate'])->name('nilai.calculate');
+
+    // Penilaian Kriteria Tambahan (Skill, Minat, Sertifikasi)
+    Route::get('/penilaian-kriteria', [\App\Http\Controllers\PenilaianKriteriaController::class, 'create'])->name('penilaian-kriteria.create');
+    Route::post('/penilaian-kriteria', [\App\Http\Controllers\PenilaianKriteriaController::class, 'store'])->name('penilaian-kriteria.store');
+    Route::post('/penilaian-kriteria/calculate', [\App\Http\Controllers\PenilaianKriteriaController::class, 'calculate'])->name('penilaian-kriteria.calculate');
+
+    // Penilaian (OLD - akan dihapus nanti)
     Route::get('/penilaian', [PenilaianController::class, 'create'])->name('penilaian.create');
     Route::post('/penilaian', [PenilaianController::class, 'store'])->name('penilaian.store');
     Route::post('/penilaian/calculate', [PenilaianController::class, 'calculate'])->name('penilaian.calculate');

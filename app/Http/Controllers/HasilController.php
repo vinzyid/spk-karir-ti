@@ -5,15 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Alternatif;
 use App\Models\HasilRekomendasi;
 use App\Models\Kriteria;
-use App\Models\Penilaian;
-use App\Services\TopsisService;
-use Illuminate\Http\Request;
+use App\Services\TopsisAhpService;
 
 class HasilController extends Controller
 {
     public function index()
     {
-        $mahasiswa = auth()->user()->mahasiswa;
+        $user = auth()->user();
+        $mahasiswa = $user->mahasiswa;
 
         if (!$mahasiswa) {
             return redirect()->route('mahasiswa.create')
@@ -26,8 +25,8 @@ class HasilController extends Controller
             ->get();
 
         if ($hasil->isEmpty()) {
-            return redirect()->route('penilaian.create')
-                ->with('warning', 'Belum ada hasil perhitungan. Silakan lakukan penilaian terlebih dahulu.');
+            return redirect()->route('penilaian-kriteria.create')
+                ->with('warning', 'Belum ada hasil perhitungan. Silakan lengkapi nilai dan penilaian karir terlebih dahulu.');
         }
 
         $top3 = $hasil->take(3);
@@ -39,17 +38,18 @@ class HasilController extends Controller
 
     public function detail()
     {
-        $mahasiswa = auth()->user()->mahasiswa;
+        $user = auth()->user();
+        $mahasiswa = $user->mahasiswa;
 
         if (!$mahasiswa) {
             return redirect()->route('mahasiswa.create');
         }
 
-        $topsisService = new TopsisService();
-        $result = $topsisService->hitung($mahasiswa, simpan: false);
+        $service = new TopsisAhpService();
+        $result = $service->hitung($user, simpan: false);
 
         if (isset($result['error'])) {
-            return redirect()->route('penilaian.create')
+            return redirect()->route('penilaian-kriteria.create')
                 ->with('error', $result['error']);
         }
 

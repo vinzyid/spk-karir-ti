@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alternatif;
 use App\Models\HasilRekomendasi;
 use App\Models\Kriteria;
-use App\Models\Penilaian;
-use Illuminate\Http\Request;
+use App\Models\NilaiMahasiswa;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $user = auth()->user();
-        $mahasiswa = $user->mahasiswa;
+        $mahasiswa = $user->mahasiswa ?? null;
 
         $data = [
             'user' => $user,
             'mahasiswa' => $mahasiswa,
             'hasMahasiswa' => $mahasiswa !== null,
-            'hasPenilaian' => false,
+            'hasNilai' => false,
             'hasHasil' => false,
             'top3' => [],
             'semuaHasil' => [],
@@ -29,9 +27,11 @@ class DashboardController extends Controller
         ];
 
         if ($mahasiswa) {
-            $penilaianCount = Penilaian::where('mahasiswa_id', $mahasiswa->id)->count();
-            $data['hasPenilaian'] = $penilaianCount > 0;
+            // Cek apakah sudah mengisi nilai mata kuliah
+            $nilaiCount = NilaiMahasiswa::where('user_id', $user->id)->count();
+            $data['hasNilai'] = $nilaiCount > 0;
 
+            // Cek hasil rekomendasi
             $hasil = HasilRekomendasi::where('mahasiswa_id', $mahasiswa->id)
                 ->with('alternatif')
                 ->orderBy('ranking')
