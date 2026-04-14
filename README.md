@@ -190,10 +190,3 @@ hasil_rekomendassis     — Hasil ranking TOPSIS tersimpan
 ## 📌 Status Project
 
 > 🟢 **Aktif dikembangkan** — Versi fungsional tersedia, fitur inti sudah berjalan.
-
----
-
-## 👨‍💻 Developer
-
-**Rafi** — Mahasiswa Teknologi Informasi  
-Tugas Praktikum Sistem Pendukung Keputusan, Semester 4
