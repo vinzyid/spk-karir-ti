@@ -1,44 +1,199 @@
-# 🚀 SPK Rekomendasi Karir Mahasiswa TI (Laravel + AHP + TOPSIS)
+# SPK Rekomendasi Karir Mahasiswa TI
 
-Website ini merupakan Sistem Pendukung Keputusan (SPK) berbasis web yang dikembangkan menggunakan Laravel untuk membantu mahasiswa Teknologi Informasi dalam menentukan jalur karir yang paling sesuai berdasarkan profil mereka. Sistem ini memanfaatkan metode Analytical Hierarchy Process (AHP) untuk menentukan bobot kriteria secara objektif, serta Technique for Order Preference by Similarity to Ideal Solution (TOPSIS) untuk melakukan proses perankingan alternatif karir sehingga menghasilkan rekomendasi yang optimal dan berbasis data.
+> **Sistem Pendukung Keputusan** berbasis web untuk membantu mahasiswa Teknologi Informasi menentukan jalur karir yang paling sesuai menggunakan metode **AHP + TOPSIS**.
 
-Sistem ini mempertimbangkan empat kriteria utama yaitu nilai akademik, skill teknis, minat, dan sertifikat, dengan bobot yang telah dihitung menggunakan metode AHP. Alternatif karir yang direkomendasikan meliputi Web Developer, Mobile Developer, Data Analyst, UI/UX Designer, Network Engineer, Cyber Security, DevOps Engineer, dan System Analyst. Hasil akhir dari sistem ini berupa ranking karir serta tiga rekomendasi terbaik yang dapat dijadikan acuan oleh mahasiswa dalam menentukan arah karirnya.
+---
 
-Website ini dilengkapi dengan fitur autentikasi pengguna (login dan register), form input data mahasiswa, proses perhitungan SPK menggunakan metode TOPSIS, serta dashboard interaktif yang menampilkan hasil rekomendasi dalam bentuk visualisasi grafik. Selain itu, terdapat panel admin yang memungkinkan pengelolaan data kriteria dan alternatif karir. Untuk meningkatkan pengalaman pengguna, sistem ini juga dilengkapi dengan elemen visual berupa animasi 3D ringan menggunakan Lottie dan efek CSS transform yang hanya diterapkan pada bagian tertentu seperti landing page dan dashboard agar tetap menjaga performa website tetap cepat dan ringan.
+## 📖 Tentang Project
 
-Pengembangan sistem menggunakan Laravel 11 sebagai backend framework, MySQL sebagai database, Blade sebagai template engine tanpa penggunaan frontend framework tambahan seperti React atau Vue, serta Tailwind CSS untuk desain antarmuka yang modern dan responsif. Visualisasi data menggunakan Chart.js untuk memberikan tampilan yang informatif dan interaktif.
+Sistem ini dikembangkan sebagai tugas Praktikum Sistem Pendukung Keputusan (SPK) yang mengimplementasikan dua metode sekaligus:
 
-## ⚙️ Cara Menjalankan Project
+- **AHP (Analytical Hierarchy Process)** — menentukan bobot setiap kriteria secara objektif berdasarkan perbandingan berpasangan
+- **TOPSIS (Technique for Order Preference by Similarity to Ideal Solution)** — melakukan perankingan alternatif karir berdasarkan kedekatan dengan solusi ideal positif dan negati
 
-Clone repository ini dan jalankan perintah berikut:
+Hasil akhirnya berupa **ranking karir** dengan **rekomendasi terbaik (Top 3)** yang dapat dijadikan acuan mahasiswa dalam menentukan arah karirnya.
+
+---
+
+## ⚙️ Kriteria Penilaian
+
+Sistem menggunakan **4 kriteria utama** dengan bobot AHP yang telah dihitung:
+
+| Kode | Kriteria | Bobot AHP | Keterangan |
+|------|----------|-----------|------------|
+| C1 | Nilai Akademik | **25.07%** | Dihitung dari rata-rata nilai mata kuliah relevan per jalur karir |
+| C2 | Skill Teknis | **49.67%** | Tingkat penguasaan skill teknis spesifik (0–100) |
+| C3 | Minat | **10.27%** | Tingkat ketertarikan pada jalur karir (1–5) |
+| C4 | Sertifikasi | **14.95%** | Jumlah sertifikat relevan yang dimiliki |
+
+---
+
+## 💼 Alternatif Karir
+
+Sistem merekomendasikan dari **8 jalur karir IT**:
+
+| # | Karir | Deskripsi |
+|---|-------|-----------|
+| 1 | 🌐 Web Developer | Frontend & backend development dengan HTML, JS, PHP, dan framework modern |
+| 2 | 📱 Mobile Developer | Aplikasi Android & iOS menggunakan Kotlin, Flutter, atau Swift |
+| 3 | 📊 Data Analyst | Analisis data menggunakan SQL, Python, Excel, Tableau, dan Power BI |
+| 4 | 🔌 Network Engineer | Infrastruktur jaringan, Cisco, Linux Server, keamanan jaringan |
+| 5 | 🎨 UI/UX Designer | Desain antarmuka dengan Figma, Adobe XD, user research |
+| 6 | 🛡️ QA Engineer | Software testing manual & otomatis, Selenium, JIRA |
+| 7 | ⚙️ Data Scientist | Machine learning, Python, TensorFlow, statistika |
+| 8 | ☁️ DevOps Engineer | Docker, Kubernetes, CI/CD, cloud AWS/GCP/Azure |
+
+---
+
+## 🚀 Alur Penggunaan
+
+```
+1. Register / Login
+       ↓
+2. Isi Data Diri Mahasiswa (Nama, NIM, Prodi)
+       ↓
+3. Input Nilai Mata Kuliah
+   (nilai 0–100 untuk setiap mata kuliah)
+       ↓
+4. Input Penilaian Karir
+   🟣 Pilih skill teknis yang dikuasai (toggle buttons)
+   ⭐ Pilih tingkat minat (bintang 1–5)
+   🔢 Pilih jumlah sertifikasi (stepper 0–n)
+       ↓
+5. Klik "Hitung Rekomendasi Karir"
+       ↓
+6. Lihat Hasil: Hero rekomendasi #1 + Top 3 podium + Ranking lengkap
+```
+
+---
+
+## 🛠️ Teknologi
+
+| Komponen | Teknologi |
+|----------|-----------|
+| Backend | Laravel 12, PHP 8.2+ |
+| Database | MySQL |
+| Frontend | Blade Template Engine, Vanilla CSS |
+| Grafik | Chart.js (Bar + Doughnut) |
+| Auth | Laravel Breeze |
+| Desain | Dark Glassmorphism, CSS Animations |
+
+> **Catatan:** Tidak menggunakan Tailwind CSS atau framework frontend tambahan — murni Vanilla CSS dengan variabel CSS custom.
+
+---
+
+## ⚡ Cara Menjalankan
+
+### 1. Clone & Install
 
 ```bash
-git clone https://github.com/username/spk-karir-ti.git
+git clone https://github.com/vinzyid/spk-karir-ti.git
 cd spk-karir-ti
 composer install
+```
+
+### 2. Konfigurasi Environment
+
+```bash
 cp .env.example .env
 php artisan key:generate
+```
+
+Edit `.env` sesuai database lokal:
+```env
+DB_DATABASE=spk_karir_ti
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 3. Migrasi & Seeder
+
+```bash
 php artisan migrate
+php artisan db:seed --class=AdminSeeder
+php artisan db:seed --class=AlternatifSeeder
+php artisan db:seed --class=MataKuliahSeeder
+php artisan db:seed --class=BobotKarirSeeder
+```
+
+### 4. Jalankan Server
+
+```bash
 php artisan serve
 ```
 
-Kemudian buka browser dan akses:
-http://localhost:8000
+Buka browser: **http://localhost:8000**
 
-## 🛠️ Teknologi yang Digunakan
+---
 
-Laravel 11, PHP 8.2, MySQL, Tailwind CSS, Blade Template Engine, Chart.js, dan Lottie Animation.
+## 👤 Akun Default
 
-## 🎯 Fitur Utama
+Setelah seeder dijalankan, tersedia akun admin bawaan:
 
-Sistem autentikasi pengguna, input data mahasiswa, perhitungan AHP dan TOPSIS, rekomendasi karir (Top 3), dashboard interaktif, visualisasi data, serta admin panel untuk manajemen data.
+| Field | Value |
+|-------|-------|
+| Email | `admin@spk.com` |
+| Password | `password` |
+| Role | Admin |
+
+Untuk akun mahasiswa, daftar lewat halaman **Register**.
+
+---
+
+## 🗂️ Struktur Database
+
+```
+users                   — Data akun pengguna (mahasiswa & admin)
+mahasiswas              — Profil mahasiswa (NIM, prodi, dll)
+alternatifs             — 8 jalur karir IT
+kriterias               — Kriteria mata kuliah
+nilai_mahasiswas        — Nilai mahasiswa per mata kuliah
+bobot_karirs            — Bobot mata kuliah terhadap setiap karir
+penilaian_kriterias     — Penilaian skill, minat, sertifikat per karir
+hasil_rekomendassis     — Hasil ranking TOPSIS tersimpan
+```
+
+---
+
+## 🎯 Fitur Sistem
+
+### 👨‍🎓 Mahasiswa
+- [x] Register & login
+- [x] Isi data diri (NIM, nama, prodi)
+- [x] Input nilai mata kuliah
+- [x] Evaluasi karir: skill toggle, rating bintang, stepper sertifikasi
+- [x] Hitung rekomendasi otomatis (AHP + TOPSIS)
+- [x] Lihat hasil: hero rekomendasi + top 3 + ranking lengkap
+- [x] Lihat detail langkah perhitungan TOPSIS
+- [x] Pengaturan akun (ubah profil & password)
+
+### 👑 Admin
+- [x] Dashboard statistik (total user, mahasiswa, karir, dsb.)
+- [x] Kelola kriteria (CRUD)
+- [x] Kelola alternatif karir (CRUD)
+- [x] Lihat distribusi rekomendasi via grafik
+
+---
+
+## 📱 Tampilan
+
+- **Landing Page** — intro sistem dengan animasi
+- **Dashboard** — step tracker progress pengisian data
+- **Input Nilai** — tabel mata kuliah dengan input nilai 0–100
+- **Evaluasi Karir** — toggle skill, bintang minat, stepper sertifikasi
+- **Hasil Rekomendasi** — hero + podium + grafik + tabel ranking
+- **Detail TOPSIS** — transparansi setiap langkah perhitungan
+- **Pengaturan** — ubah profil & password dengan strength indicator
+
+---
 
 ## 📌 Status Project
 
-Dalam tahap pengembangan dan penyempurnaan.
+> 🟢 **Aktif dikembangkan** — Versi fungsional tersedia, fitur inti sudah berjalan.
 
+---
 
-## 🔥 Pengembangan Selanjutnya
+## 👨‍💻 Developer
 
-Pengembangan lanjutan meliputi penambahan fitur rekomendasi skill, career roadmap, serta export hasil ke dalam format PDF.
-# SPK Karir TI
+**Rafi** — Mahasiswa Teknologi Informasi  
+Tugas Praktikum Sistem Pendukung Keputusan, Semester 4
