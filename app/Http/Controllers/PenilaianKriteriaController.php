@@ -31,9 +31,12 @@ class PenilaianKriteriaController extends Controller
         
         $request->validate([
             'nilai' => 'required|array',
-            'nilai.*.skill_teknis' => 'required|numeric|min:1|max:100',
+            'nilai.*.skill_teknis' => 'required|numeric|min:0|max:100',
             'nilai.*.minat' => 'required|numeric|min:1|max:5',
             'nilai.*.sertifikat' => 'required|numeric|min:0|max:50',
+        ], [
+            'nilai.*.minat.required' => 'Pilih tingkat minat (⭐) untuk semua jalur karir!',
+            'nilai.*.minat.min' => 'Tingkat minat harus dipilih (minimal 1 bintang).',
         ]);
 
         DB::transaction(function () use ($user, $request) {
@@ -59,20 +62,41 @@ class PenilaianKriteriaController extends Controller
     public function calculate()
     {
         $user = auth()->user();
-        
+
         if (!$user->mahasiswa) {
             return redirect()->route('mahasiswa.create')
                 ->with('error', 'Silakan lengkapi data mahasiswa terlebih dahulu.');
         }
-        
-        $service = new TopsisServiceFinal();
-        $result = $service->hitung($user, true);
-        
-        if (isset($result['error'])) {
-            return redirect()->back()->with('error', $result['error']);
+
+        // Cek data nilai mata kuliah
+        $hasNilai = \App\Models\NilaiMahasiswa::where('user_id', $user->id)->exists();
+        if (!$hasNilai) {
+            return redirect()->route('nilai.create')
+                ->with('error', 'Silakan isi nilai mata kuliah terlebih dahulu sebelum menghitung rekomendasi.');
         }
-        
-        return redirect()->route('hasil.index')
-            ->with('success', 'Rekomendasi karir menggunakan AHP dan TOPSIS berhasil dihitung!');
+
+        // Cek data penilaian kriteria
+        $hasPenilaian = PenilaianKriteria::where('user_id', $user->id)->exists();
+        if (!$hasPenilaian) {
+            return redirect()->back()
+                ->with('error', 'Silakan lengkapi evaluasi skill, minat, dan sertifikasi terlebih dahulu.');
+        }
+
+        try {
+            $service = new TopsisServiceFinal();
+            $result = $service->hitung($user, true);
+
+            if (isset($result['error'])) {
+                return redirect()->back()->with('error', $result['error']);
+            }
+
+            return redirect()->route('hasil.index')
+                ->with('success', '✅ Rekomendasi karir berhasil dihitung menggunakan AHP dan TOPSIS!');
+
+        } catch (\Exception $e) {
+            \Log::error('TOPSIS Calculate Error: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Terjadi error saat menghitung: ' . $e->getMessage());
+        }
     }
 }
