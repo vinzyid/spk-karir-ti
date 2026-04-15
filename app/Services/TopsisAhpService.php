@@ -52,12 +52,24 @@ class TopsisAhpService
         // Step 0: Hitung matriks keputusan (4 kriteria × 8 alternatif)
         $matriks = [];
         foreach ($alternatifs as $ai => $alt) {
-            // C1: Nilai Akademik - dihitung dari nilai mata kuliah × bobot karir
+            // C1: Nilai Akademik
+            // Untuk MK berpasangan (misal Pemro 1 & Pemro 2):
+            //   rata-rata nilai dulu → baru dikali bobot
+            // Untuk MK tunggal: langsung nilai × bobot
             $bobotKarir = BobotKarir::where('alternatif_id', $alt->id)->get();
             $nilaiAkademik = 0;
             foreach ($bobotKarir as $bobot) {
                 $nilaiMk = $nilaiMahasiswa->get($bobot->kriteria_id);
-                if ($nilaiMk) {
+                if (!$nilaiMk) continue;
+
+                if ($bobot->pasangan_kriteria_id) {
+                    // MK berpasangan → rata-rata dulu
+                    $nilaiPasangan = $nilaiMahasiswa->get($bobot->pasangan_kriteria_id);
+                    $nilaiPasanganVal = $nilaiPasangan ? $nilaiPasangan->nilai : $nilaiMk->nilai;
+                    $nilaiRataRata = ($nilaiMk->nilai + $nilaiPasanganVal) / 2;
+                    $nilaiAkademik += ($nilaiRataRata * $bobot->bobot) / 100;
+                } else {
+                    // MK tunggal → langsung
                     $nilaiAkademik += ($nilaiMk->nilai * $bobot->bobot) / 100;
                 }
             }

@@ -12,7 +12,8 @@ class BobotKarir extends Model
     protected $fillable = [
         'alternatif_id',
         'kriteria_id',
-        'bobot'
+        'bobot',
+        'pasangan_kriteria_id',
     ];
 
     protected $casts = [

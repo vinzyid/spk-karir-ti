@@ -1,320 +1,398 @@
 @extends('layouts.spk')
 
-@section('title', 'Evaluasi Kriteria Karir')
-@section('subtitle', 'Pilih skill, tingkat minat, dan sertifikasi untuk setiap jalur karir')
+@section('title', 'Evaluasi Karir')
+@section('subtitle', 'Isi kuisioner berikut untuk mendapatkan rekomendasi karir terbaik')
 
 @section('content')
 
 @php
-$skillSets = [
-    'Web Developer'      => ['HTML/CSS', 'JavaScript', 'PHP', 'MySQL', 'React/Vue.js', 'Bootstrap', 'REST API', 'Git'],
-    'Mobile Developer'   => ['Kotlin/Java', 'Flutter/Dart', 'Swift', 'React Native', 'Android SDK', 'iOS SDK', 'Firebase', 'Git'],
-    'Data Analyst'       => ['SQL', 'Python', 'Excel', 'Tableau', 'Power BI', 'Statistika', 'Data Cleaning', 'R'],
-    'Network Engineer'   => ['TCP/IP', 'Cisco/MikroTik', 'Network Security', 'Linux Server', 'Firewall', 'VPN', 'Routing', 'Switching'],
-    'UI/UX Designer'     => ['Figma', 'Adobe XD', 'User Research', 'Wireframing', 'Prototyping', 'Design System', 'HTML/CSS', 'Usability Testing'],
-    'QA Engineer'        => ['Manual Testing', 'Selenium', 'JIRA', 'Bug Reporting', 'Test Automation', 'Postman', 'Test Planning', 'Python/Java'],
-    'Data Scientist'     => ['Python', 'R', 'Machine Learning', 'Deep Learning', 'TensorFlow/PyTorch', 'Statistika', 'SQL', 'Data Wrangling'],
-    'DevOps Engineer'    => ['Docker', 'Kubernetes', 'AWS/GCP/Azure', 'CI/CD Pipeline', 'Linux', 'Shell Scripting', 'Terraform', 'Git'],
+$karirList = [
+    'Web Developer', 'Mobile Developer', 'Data Analyst', 'Network Engineer',
+    'UI/UX Designer', 'QA Engineer', 'Data Scientist', 'DevOps Engineer',
 ];
-
-$minatLabels = ['', 'Sangat Tidak Minat', 'Tidak Minat', 'Netral', 'Minat', 'Sangat Minat'];
+$karirIcons = [
+    'Web Developer'=>'🌐','Mobile Developer'=>'📱','Data Analyst'=>'📊','Network Engineer'=>'🔌',
+    'UI/UX Designer'=>'🎨','QA Engineer'=>'🛡️','Data Scientist'=>'⚙️','DevOps Engineer'=>'☁️',
+];
+$skillKategori = [
+    '💻 Programming & Web' => ['HTML/CSS','JavaScript','TypeScript','PHP','Python','Java','Kotlin','C#'],
+    '📱 Mobile Development' => ['Flutter/Dart','React Native','Swift','Android SDK','iOS Development','Firebase'],
+    '🗄️ Database & Query'  => ['MySQL/PostgreSQL','MongoDB','SQL','NoSQL','Redis','Oracle'],
+    '📊 Data & AI'          => ['Machine Learning','Deep Learning','Data Analysis','R','Tableau','Power BI','Excel/Spreadsheet','Statistika'],
+    '🔌 Jaringan & Keamanan'=> ['TCP/IP','Linux Server','Cisco/MikroTik','Network Security','Firewall/VPN','Wireshark'],
+    '🎨 Design & UX'        => ['Figma','Adobe XD','Canva Pro','UI Design','UX Research','Prototyping','Wireframing'],
+    '☁️ DevOps & Cloud'     => ['Docker','Kubernetes','AWS/GCP/Azure','CI/CD Pipeline','Shell/Bash Scripting','Terraform','Ansible'],
+    '🛡️ Testing & QA'       => ['Manual Testing','Selenium/Playwright','Postman','JIRA','Test Automation','JUnit/PyTest'],
+    '🔧 Tools & Lainnya'    => ['Git/GitHub','REST API','GraphQL','Microservices','Agile/Scrum','Linux CLI'],
+];
+$pilihanSertif = ['Belum Ada'=>0,'1'=>1,'2'=>2,'3'=>3,'4'=>4,'5'=>5,'Lebih dari 5'=>6];
 @endphp
 
-{{-- Alur Pengisian --}}
-<div class="card fade-in" style="margin-bottom: 20px; border-color: rgba(99,102,241,0.3);">
-    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-        <div style="font-size: 2rem;">📋</div>
+@if(session('success'))
+<div style="margin-bottom:20px;padding:14px 20px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);border-radius:12px;color:var(--success);font-size:0.9rem;display:flex;align-items:center;gap:10px;">
+    <span style="font-size:1.2rem;">✅</span> {{ session('success') }}
+</div>
+@endif
+@if($errors->any())
+<div style="margin-bottom:20px;padding:14px 20px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:12px;color:var(--danger);font-size:0.88rem;">
+    <strong>Harap perbaiki:</strong>
+    <ul style="margin:6px 0 0 16px;padding:0;">
+        @foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach
+    </ul>
+</div>
+@endif
+
+{{-- Progress indicator --}}
+<div class="card fade-in" style="margin-bottom:24px;padding:20px 24px;">
+    <div style="display:flex;align-items:center;gap:0;overflow-x:auto;">
+        @foreach(['Skill Teknis','Minat Karir','Proyek','Sertifikasi'] as $idx => $step)
+        <div style="display:flex;align-items:center;flex:1;min-width:80px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:rgba(99,102,241,0.15);border:2px solid rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:var(--primary-light);">{{ $idx+1 }}</div>
+                <span style="font-size:0.7rem;color:var(--text-secondary);white-space:nowrap;">{{ $step }}</span>
+            </div>
+            @if($idx < 3)
+            <div style="flex:1;height:2px;background:rgba(99,102,241,0.2);margin:0 4px;margin-bottom:16px;"></div>
+            @endif
+        </div>
+        @endforeach
+    </div>
+</div>
+
+<form method="POST" action="{{ route('penilaian-kriteria.store') }}" id="kuisionerForm">
+@csrf
+
+{{-- ============================
+     BAGIAN 1: SKILL TEKNIS
+============================= --}}
+<div class="card fade-in" style="margin-bottom:24px;">
+    <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+        <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">💻</div>
+        <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <h3 style="font-weight:700;margin:0;font-size:1.05rem;">Skill dan Kemampuan Teknis</h3>
+                <span style="font-size:0.75rem;padding:2px 10px;background:rgba(239,68,68,0.15);color:var(--danger);border-radius:20px;font-weight:600;">Opsional</span>
+            </div>
+            <p style="color:var(--text-secondary);font-size:0.83rem;margin:4px 0 0;">Centang semua skill yang kamu kuasai. Contoh: Figma, HTML, Java, Python, dll.</p>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+            <div id="skillCount" style="font-size:1.4rem;font-weight:800;color:var(--primary-light);">0</div>
+            <div style="font-size:0.72rem;color:var(--text-secondary);">skill dipilih</div>
+        </div>
+    </div>
+
+    @foreach($skillKategori as $kategori => $skills)
+    <div style="margin-bottom:18px;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--text-secondary);margin-bottom:8px;letter-spacing:0.5px;text-transform:uppercase;">{{ $kategori }}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            @foreach($skills as $skill)
+            <label class="skill-chip">
+                <input type="checkbox" name="skills[]" value="{{ $skill }}"
+                    onchange="updateSkillCount()"
+                    {{ in_array($skill, $savedSkills ?? []) ? 'checked' : '' }}>
+                <span class="chip-inner">
+                    <span class="chip-check">✓</span>
+                    {{ $skill }}
+                </span>
+            </label>
+            @endforeach
+        </div>
+    </div>
+    @endforeach
+</div>
+
+{{-- ============================
+     BAGIAN 2: MINAT KARIR
+============================= --}}
+<div class="card fade-in fade-in-delay-1" style="margin-bottom:24px;">
+    <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+        <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">⭐</div>
         <div>
-            <h3 style="font-weight: 700; margin-bottom: 6px;">Cara Pengisian</h3>
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.85rem; color: var(--text-secondary);">
-                <span>🟣 <strong>Skill:</strong> Klik skill yang kamu kuasai</span>
-                <span>⭐ <strong>Minat:</strong> Klik bintang 1–5</span>
-                <span>📜 <strong>Sertifikasi:</strong> Ketik nama sertifikat yang kamu punya</span>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <h3 style="font-weight:700;margin:0;font-size:1.05rem;">Minat terhadap Bidang <span style="font-style:italic;color:var(--text-secondary);font-size:0.9rem;">(Passion)</span></h3>
+                <span style="font-size:0.75rem;padding:2px 10px;background:rgba(239,68,68,0.15);color:var(--danger);border-radius:20px;font-weight:600;">Wajib</span>
+            </div>
+            <p style="color:var(--text-secondary);font-size:0.83rem;margin:4px 0 0;">Pilih jalur karir yang paling dan kedua paling kamu minati.</p>
+        </div>
+    </div>
+
+    <div class="grid-2" style="gap:20px;">
+        {{-- Pilihan 1 --}}
+        <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:800;color:#78350f;">1</div>
+                <div>
+                    <div style="font-weight:700;font-size:0.92rem;">Pilihan Pertama</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);">Karir yang paling kamu inginkan</div>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                @foreach($alternatifs as $alt)
+                <label class="karir-option karir-option-1" data-id="{{ $alt->id }}">
+                    <input type="radio" name="minat_1" value="{{ $alt->id }}"
+                        onchange="handleMinat1Change({{ $alt->id }})"
+                        {{ ($savedMinat1 ?? '') == $alt->id ? 'checked' : '' }}>
+                    <span class="karir-icon">{{ $karirIcons[$alt->nama] ?? '💼' }}</span>
+                    <span class="karir-nama">{{ $alt->nama }}</span>
+                    <span class="karir-check">✓</span>
+                </label>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- Pilihan 2 --}}
+        <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:800;color:white;">2</div>
+                <div>
+                    <div style="font-weight:700;font-size:0.92rem;">Pilihan Kedua</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);">Karir alternatif yang kamu sukai</div>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                @foreach($alternatifs as $alt)
+                <label class="karir-option karir-option-2" data-id="{{ $alt->id }}">
+                    <input type="radio" name="minat_2" value="{{ $alt->id }}"
+                        onchange="handleMinat2Change({{ $alt->id }})"
+                        {{ ($savedMinat2 ?? '') == $alt->id ? 'checked' : '' }}>
+                    <span class="karir-icon">{{ $karirIcons[$alt->nama] ?? '💼' }}</span>
+                    <span class="karir-nama">{{ $alt->nama }}</span>
+                    <span class="karir-check">✓</span>
+                </label>
+                @endforeach
+            </div>
+            <div id="minatWarning" style="display:none;margin-top:8px;padding:10px 14px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;font-size:0.8rem;color:var(--warning);">
+                ⚠️ Pilihan 2 tidak boleh sama dengan Pilihan 1
             </div>
         </div>
     </div>
 </div>
 
-@if($alternatifs->isEmpty())
-    <div class="card fade-in" style="text-align: center; padding: 60px; border-color: rgba(245,158,11,0.3);">
-        <div style="font-size: 3rem; margin-bottom: 16px;">⚠️</div>
-        <h3 style="font-weight: 700; margin-bottom: 8px;">Data jalur karir belum tersedia</h3>
-        <p style="color: var(--text-secondary);">Hubungi admin untuk menambahkan data karir.</p>
-    </div>
-@else
-<form method="POST" action="{{ route('penilaian-kriteria.store') }}" id="penilaianForm">
-    @csrf
+{{-- ============================
+     BAGIAN 3 & 4 SEJAJAR
+============================= --}}
+<div class="grid-2" style="gap:24px;margin-bottom:24px;">
 
-    @foreach($alternatifs as $alt)
-    @php
-        $skills = $skillSets[$alt->nama] ?? ['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4'];
-        $savedData = $penilaianTersimpan->get($alt->id);
-        $savedSkillTeknis = $savedData ? (float)$savedData->skill_teknis : 0;
-        $savedMinat = $savedData ? (int)$savedData->minat : 0;
-        $savedSertifikat = $savedData ? (int)$savedData->sertifikat : 0;
-
-        // Reconstruct how many skills were selected from saved score
-        $totalSkills = count($skills);
-        $savedSelectedCount = $savedSkillTeknis > 0 ? round(($savedSkillTeknis / 100) * $totalSkills) : 0;
-    @endphp
-
-    <div class="card fade-in" style="margin-bottom: 20px;" id="card-{{ $alt->id }}">
-        {{-- Header Karir --}}
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0;">
-                    @php
-                        $icons = ['Web Developer'=>'🌐','Mobile Developer'=>'📱','Data Analyst'=>'📊','Network Engineer'=>'🔌','UI/UX Designer'=>'🎨','QA Engineer'=>'🛡️','Data Scientist'=>'⚙️','DevOps Engineer'=>'☁️'];
-                    @endphp
-                    {{ $icons[$alt->nama] ?? '💼' }}
+    {{-- Proyek Mandiri --}}
+    <div class="card fade-in fade-in-delay-2">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+            <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#06b6d4,#0891b2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📁</div>
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <h3 style="font-weight:700;margin:0;font-size:0.95rem;">Proyek Mandiri</h3>
+                    <span style="font-size:0.72rem;padding:2px 8px;background:rgba(239,68,68,0.15);color:var(--danger);border-radius:20px;font-weight:600;">Wajib</span>
                 </div>
-                <div>
-                    <h3 style="font-weight: 700; font-size: 1.1rem; margin: 0;">{{ $alt->nama }}</h3>
-                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">
-                        <span id="summary-{{ $alt->id }}-skill" style="color: var(--primary-light);">{{ $savedSelectedCount }}/{{ $totalSkills }} skill</span>
-                        &nbsp;·&nbsp;
-                        <span>Minat: </span><span id="summary-{{ $alt->id }}-minat" style="color: var(--warning);">{{ $savedMinat > 0 ? str_repeat('⭐', $savedMinat) : '-' }}</span>
-                        &nbsp;·&nbsp;
-                        <span id="summary-{{ $alt->id }}-sertif" style="color: var(--success);">{{ $savedSertifikat }} sertifikat</span>
-                    </div>
-                </div>
+                <p style="color:var(--text-secondary);font-size:0.78rem;margin:2px 0 0;">Berapa proyek/tugas besar yang sudah dikerjakan?</p>
             </div>
-            {{-- Hidden inputs --}}
-            <input type="hidden" name="nilai[{{ $alt->id }}][skill_teknis]" id="skill-val-{{ $alt->id }}" value="{{ $savedSkillTeknis }}">
-            <input type="hidden" name="nilai[{{ $alt->id }}][minat]" id="minat-val-{{ $alt->id }}" value="{{ $savedMinat }}" required>
-            <input type="hidden" name="nilai[{{ $alt->id }}][sertifikat]" id="sertif-val-{{ $alt->id }}" value="{{ $savedSertifikat }}">
         </div>
-
-        <div class="grid-3" style="gap: 24px; align-items: start;">
-
-            {{-- KOLOM 1: Skill Teknis --}}
-            <div>
-                <div style="font-weight: 600; margin-bottom: 10px; font-size: 0.9rem;">
-                    🧠 Skill Teknis
-                    <span id="score-{{ $alt->id }}" style="font-size: 0.8rem; color: var(--primary-light); margin-left: 8px;">
-                        ({{ round($savedSkillTeknis) }}/100)
-                    </span>
-                </div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px;">Pilih skill yang kamu kuasai:</div>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="skills-{{ $alt->id }}">
-                    @foreach($skills as $idx => $skill)
-                    <button type="button"
-                        class="skill-tag"
-                        data-alt="{{ $alt->id }}"
-                        data-total="{{ $totalSkills }}"
-                        onclick="toggleSkill(this)"
-                        style="padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-dark); color: var(--text-secondary); font-size: 0.8rem; cursor: pointer; transition: all 0.2s; {{ $idx < $savedSelectedCount ? 'background: rgba(99,102,241,0.2); border-color: var(--primary); color: var(--primary-light);' : '' }}"
-                        {{ $idx < $savedSelectedCount ? 'data-selected=true' : '' }}>
-                        {{ $skill }}
-                    </button>
-                    @endforeach
-                </div>
-                <div style="margin-top: 10px; height: 4px; border-radius: 2px; background: rgba(99,102,241,0.1); overflow: hidden;">
-                    <div id="bar-{{ $alt->id }}" style="height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 0.3s; width: {{ $savedSkillTeknis }}%;"></div>
-                </div>
-            </div>
-
-            {{-- KOLOM 2: Minat (Star Rating) --}}
-            <div>
-                <div style="font-weight: 600; margin-bottom: 10px; font-size: 0.9rem;">⭐ Tingkat Minat</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 12px;">Seberapa minat kamu di bidang ini?</div>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    @for($star = 1; $star <= 5; $star++)
-                    <button type="button"
-                        class="minat-btn"
-                        data-alt="{{ $alt->id }}"
-                        data-val="{{ $star }}"
-                        onclick="selectMinat(this)"
-                        style="display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 10px; border: 1px solid {{ $savedMinat == $star ? 'var(--primary)' : 'var(--border)' }}; background: {{ $savedMinat == $star ? 'rgba(99,102,241,0.15)' : 'var(--bg-dark)' }}; color: {{ $savedMinat == $star ? 'var(--primary-light)' : 'var(--text-secondary)' }}; cursor: pointer; text-align: left; transition: all 0.2s; font-size: 0.82rem; width: 100%;">
-                        <span style="font-size: 1rem;">{{ str_repeat('⭐', $star) }}</span>
-                        <span>{{ $minatLabels[$star] }}</span>
-                    </button>
-                    @endfor
-                </div>
-            </div>
-
-            {{-- KOLOM 3: Sertifikasi (Stepper) --}}
-            <div>
-                <div style="font-weight: 600; margin-bottom: 10px; font-size: 0.9rem;">
-                    📜 Jumlah Sertifikasi
-                </div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 16px;">
-                    Berapa banyak sertifikat relevan yang kamu miliki?
-                </div>
-
-                {{-- Stepper --}}
-                <div style="display: flex; align-items: center; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; width: fit-content;">
-                    <button type="button" onclick="changeSertif({{ $alt->id }}, -1)"
-                        style="width: 44px; height: 44px; border: none; background: rgba(239,68,68,0.1); color: var(--danger); font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">−</button>
-                    <div style="min-width: 60px; height: 44px; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: var(--primary-light);" id="sertif-display-{{ $alt->id }}">
-                        {{ $savedSertifikat }}
-                    </div>
-                    <button type="button" onclick="changeSertif({{ $alt->id }}, 1)"
-                        style="width: 44px; height: 44px; border: none; background: rgba(34,197,94,0.1); color: var(--success); font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">+</button>
-                </div>
-
-                {{-- Label jumlah --}}
-                <div style="margin-top: 12px; font-size: 0.82rem; color: var(--text-secondary);">
-                    @php
-                        $labels = ['Belum ada', '1 sertifikat', '2 sertifikat', '3 sertifikat', '4 sertifikat'];
-                    @endphp
-                    <span id="sertif-label-{{ $alt->id }}">
-                        {{ $savedSertifikat <= 4 ? ($labels[$savedSertifikat] ?? $savedSertifikat . ' sertifikat') : $savedSertifikat . ' sertifikat' }}
-                    </span>
-                </div>
-
-                {{-- Quick select buttons --}}
-                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px;">
-                    @foreach([0, 1, 2, 3, 5, 10] as $preset)
-                    <button type="button" onclick="setSertif({{ $alt->id }}, {{ $preset }})"
-                        id="preset-{{ $alt->id }}-{{ $preset }}"
-                        style="padding: 4px 12px; border-radius: 20px; border: 1px solid {{ $savedSertifikat == $preset ? 'var(--primary)' : 'var(--border)' }}; background: {{ $savedSertifikat == $preset ? 'rgba(99,102,241,0.15)' : 'var(--bg-dark)' }}; color: {{ $savedSertifikat == $preset ? 'var(--primary-light)' : 'var(--text-secondary)' }}; font-size: 0.78rem; cursor: pointer; transition: all 0.2s;">
-                        {{ $preset == 0 ? 'Nol' : $preset }}
-                    </button>
-                    @endforeach
-                </div>
-            </div>
-
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="proyekGrid">
+            @php $proyekOpts = ['Belum Ada'=>0,'1 Proyek'=>1,'2 Proyek'=>2,'3 Proyek'=>3,'4 Proyek'=>4,'5 Proyek'=>5,'Lebih dari 5'=>6]; @endphp
+            @foreach($proyekOpts as $label => $val)
+            <label class="count-option {{ ($savedProyek ?? -1) == $val ? 'count-selected' : '' }}" onclick="selectCount(this, 'proyek')">
+                <input type="radio" name="proyek" value="{{ $val }}" {{ ($savedProyek ?? -1) == $val ? 'checked' : '' }} style="display:none;">
+                <span class="count-num">{{ $val == 6 ? '5+' : $val }}</span>
+                <span class="count-label">{{ $label }}</span>
+            </label>
+            @endforeach
         </div>
     </div>
-    @endforeach
 
-    {{-- Tombol Submit --}}
-    <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+    {{-- Sertifikasi --}}
+    <div class="card fade-in fade-in-delay-3">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+            <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📜</div>
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <h3 style="font-weight:700;margin:0;font-size:0.95rem;">Sertifikasi / Pengalaman</h3>
+                    <span style="font-size:0.72rem;padding:2px 8px;background:rgba(239,68,68,0.15);color:var(--danger);border-radius:20px;font-weight:600;">Wajib</span>
+                </div>
+                <p style="color:var(--text-secondary);font-size:0.78rem;margin:2px 0 0;">Jumlah sertifikat IT atau pengalaman kerja/magang</p>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            @php $sertifOpts = ['Belum Ada'=>0,'1 Sertifikat'=>1,'2 Sertifikat'=>2,'3 Sertifikat'=>3,'4 Sertifikat'=>4,'5 Sertifikat'=>5,'Lebih dari 5'=>6]; @endphp
+            @foreach($sertifOpts as $label => $val)
+            <label class="count-option {{ ($savedSertifikasi ?? -1) == $val ? 'count-selected' : '' }}" onclick="selectCount(this, 'sertifikasi')">
+                <input type="radio" name="sertifikasi" value="{{ $val }}" {{ ($savedSertifikasi ?? -1) == $val ? 'checked' : '' }} style="display:none;">
+                <span class="count-num">{{ $val == 6 ? '5+' : $val }}</span>
+                <span class="count-label">{{ $label }}</span>
+            </label>
+            @endforeach
+        </div>
+    </div>
+
+</div>
+
+{{-- ============================
+     TOMBOL SUBMIT
+============================= --}}
+<div class="card fade-in" style="padding:32px;text-align:center;background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(139,92,246,0.05));border-color:rgba(99,102,241,0.3);">
+    <div style="font-size:2rem;margin-bottom:10px;">📋</div>
+    <h3 style="font-weight:700;margin:0 0 6px;">Siap Mendapatkan Rekomendasi?</h3>
+    <p style="color:var(--text-secondary);font-size:0.85rem;margin:0 0 20px;">Pastikan minat (⭐), proyek (📁), dan sertifikasi (📜) sudah dipilih.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
         <a href="{{ route('nilai.create') }}" class="btn-secondary">← Kembali ke Nilai</a>
-        <button type="submit" class="btn-primary" id="submitBtn">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            Simpan Semua Penilaian
+        <button type="submit" class="btn-primary" style="padding:12px 36px;font-size:1rem;" id="submitBtn">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Simpan Jawaban
         </button>
     </div>
+</div>
+
 </form>
 
-{{-- Hitung Rekomendasi (jika sudah ada data tersimpan) --}}
+{{-- Hitung Rekomendasi --}}
 @if($penilaianTersimpan->count() > 0)
-<div class="card fade-in" style="margin-top: 24px; text-align: center; border-color: var(--success); box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);">
-    <div style="font-size: 2.5rem; margin-bottom: 12px;">✨</div>
-    <h3 style="font-weight: 700; margin-bottom: 8px;">Semua Data Sudah Terisi!</h3>
-    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
-        Klik tombol di bawah untuk menghitung rekomendasi karir terbaik untukmu menggunakan metode <strong>AHP + TOPSIS</strong>.
-    </p>
+<div class="card fade-in" style="margin-top:20px;text-align:center;border-color:rgba(34,197,94,0.4);box-shadow:0 0 20px rgba(34,197,94,0.1);padding:28px;">
+    <div style="font-size:2rem;margin-bottom:8px;">✨</div>
+    <h3 style="font-weight:700;margin:0 0 6px;">Data Tersimpan!</h3>
+    <p style="color:var(--text-secondary);font-size:0.85rem;margin:0 0 20px;">Klik tombol di bawah untuk menghitung rekomendasi karir menggunakan <strong>AHP + TOPSIS</strong>.</p>
     <form action="{{ route('penilaian-kriteria.calculate') }}" method="POST">
         @csrf
-        <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, var(--success), #16a34a); padding: 14px 40px; font-size: 1rem;">
+        <button type="submit" class="btn-primary" style="background:linear-gradient(135deg,var(--success),#16a34a);padding:14px 40px;font-size:1rem;">
             🚀 Hitung Rekomendasi Karir
         </button>
     </form>
 </div>
 @endif
 
-@endif
+{{-- CSS --}}
+<style>
+/* ====== Skill Chips ====== */
+.skill-chip { display:inline-flex; cursor:pointer; }
+.skill-chip input { display:none; }
+.chip-inner {
+    display:flex; align-items:center; gap:6px;
+    padding:6px 14px; border-radius:20px;
+    border:1.5px solid var(--border);
+    background:var(--bg-dark);
+    font-size:0.82rem; color:var(--text-secondary);
+    transition:all 0.15s; user-select:none;
+}
+.chip-check { font-size:0.7rem; opacity:0; transition:opacity 0.15s; }
+.skill-chip input:checked ~ .chip-inner {
+    background:rgba(99,102,241,0.2);
+    border-color:var(--primary);
+    color:var(--primary-light);
+}
+.skill-chip input:checked ~ .chip-inner .chip-check { opacity:1; }
+.skill-chip:hover .chip-inner { border-color:rgba(99,102,241,0.5); }
+
+/* ====== Karir Options ====== */
+.karir-option {
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px; border-radius:12px;
+    border:1.5px solid var(--border);
+    background:var(--bg-dark); cursor:pointer;
+    transition:all 0.15s;
+}
+.karir-option input { display:none; }
+.karir-icon { font-size:1.2rem; flex-shrink:0; }
+.karir-nama { flex:1; font-size:0.85rem; font-weight:500; }
+.karir-check {
+    width:20px; height:20px; border-radius:50%;
+    background:rgba(99,102,241,0.1); border:1.5px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.65rem; flex-shrink:0; opacity:0.4; transition:all 0.15s;
+}
+.karir-option:hover { border-color:rgba(99,102,241,0.4); background:rgba(99,102,241,0.04); }
+.karir-option.selected-1 { border-color:#f59e0b; background:rgba(245,158,11,0.08); }
+.karir-option.selected-1 .karir-check { background:#f59e0b; border-color:#f59e0b; color:#fff; opacity:1; }
+.karir-option.selected-2 { border-color:var(--accent); background:rgba(139,92,246,0.08); }
+.karir-option.selected-2 .karir-check { background:var(--accent); border-color:var(--accent); color:#fff; opacity:1; }
+
+/* ====== Count Options (Proyek & Sertifikasi) ====== */
+.count-option {
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    padding:12px 8px; border-radius:12px;
+    border:1.5px solid var(--border);
+    background:var(--bg-dark); cursor:pointer;
+    transition:all 0.15s; text-align:center;
+}
+.count-option:hover { border-color:rgba(99,102,241,0.4); transform:translateY(-1px); }
+.count-option.count-selected {
+    border-color:var(--primary);
+    background:rgba(99,102,241,0.15);
+    box-shadow:0 0 12px rgba(99,102,241,0.2);
+}
+.count-num {
+    font-size:1.4rem; font-weight:800;
+    color:var(--text-secondary); transition:color 0.15s;
+}
+.count-selected .count-num { color:var(--primary-light); }
+.count-label { font-size:0.68rem; color:var(--text-secondary); white-space:nowrap; }
+</style>
+
 @endsection
 
 @section('scripts')
 <script>
-// Toggle skill button
-function toggleSkill(btn) {
-    const isSelected = btn.dataset.selected === 'true';
-    const altId = btn.dataset.alt;
-    const total = parseInt(btn.dataset.total);
+// ===== Skill chips =====
+function updateSkillCount() {
+    const n = document.querySelectorAll('input[name="skills[]"]:checked').length;
+    document.getElementById('skillCount').textContent = n;
+    document.getElementById('skillCount').style.color = n > 0 ? 'var(--primary-light)' : 'var(--text-secondary)';
+}
+updateSkillCount();
 
-    if (isSelected) {
-        btn.dataset.selected = 'false';
-        btn.style.background = 'var(--bg-dark)';
-        btn.style.borderColor = 'var(--border)';
-        btn.style.color = 'var(--text-secondary)';
+// ===== Minat =====
+let minat1Val = {{ $savedMinat1 ?? 'null' }};
+let minat2Val = {{ $savedMinat2 ?? 'null' }};
+
+function syncMinatStyles() {
+    document.querySelectorAll('.karir-option-1').forEach(lbl => {
+        const id = parseInt(lbl.dataset.id);
+        lbl.classList.toggle('selected-1', id === minat1Val);
+    });
+    document.querySelectorAll('.karir-option-2').forEach(lbl => {
+        const id = parseInt(lbl.dataset.id);
+        lbl.classList.toggle('selected-2', id === minat2Val);
+    });
+}
+syncMinatStyles();
+
+function handleMinat1Change(id) {
+    minat1Val = id;
+    if (minat1Val === minat2Val) {
+        document.getElementById('minatWarning').style.display = 'block';
+        document.querySelector(`input[name="minat_2"][value="${id}"]`).checked = false;
+        minat2Val = null;
     } else {
-        btn.dataset.selected = 'true';
-        btn.style.background = 'rgba(99,102,241,0.2)';
-        btn.style.borderColor = 'var(--primary)';
-        btn.style.color = 'var(--primary-light)';
+        document.getElementById('minatWarning').style.display = 'none';
     }
-
-    // Hitung skor
-    const allBtns = document.querySelectorAll(`.skill-tag[data-alt="${altId}"]`);
-    let selected = 0;
-    allBtns.forEach(b => { if (b.dataset.selected === 'true') selected++; });
-
-    const score = total > 0 ? Math.round((selected / total) * 100) : 0;
-    document.getElementById(`skill-val-${altId}`).value = score;
-    document.getElementById(`score-${altId}`).textContent = `(${score}/100)`;
-    document.getElementById(`bar-${altId}`).style.width = score + '%';
-    document.getElementById(`summary-${altId}-skill`).textContent = `${selected}/${total} skill`;
+    syncMinatStyles();
 }
-
-// Select minat (star rating)
-function selectMinat(btn) {
-    const altId = btn.dataset.alt;
-    const val = btn.dataset.val;
-
-    // Reset all
-    document.querySelectorAll(`.minat-btn[data-alt="${altId}"]`).forEach(b => {
-        b.style.background = 'var(--bg-dark)';
-        b.style.borderColor = 'var(--border)';
-        b.style.color = 'var(--text-secondary)';
-    });
-
-    // Highlight selected
-    btn.style.background = 'rgba(99,102,241,0.15)';
-    btn.style.borderColor = 'var(--primary)';
-    btn.style.color = 'var(--primary-light)';
-
-    document.getElementById(`minat-val-${altId}`).value = val;
-    document.getElementById(`summary-${altId}-minat`).textContent = '⭐'.repeat(parseInt(val));
-}
-
-// Stepper sertifikasi: ubah nilai +/−
-function changeSertif(altId, delta) {
-    const input = document.getElementById(`sertif-val-${altId}`);
-    let val = Math.max(0, parseInt(input.value || 0) + delta);
-    setSertif(altId, val);
-}
-
-// Set nilai sertifikasi langsung (preset / stepper)
-function setSertif(altId, val) {
-    val = Math.max(0, val);
-    document.getElementById(`sertif-val-${altId}`).value = val;
-    document.getElementById(`sertif-display-${altId}`).textContent = val;
-
-    // Label teks
-    const labels = ['Belum ada', '1 sertifikat', '2 sertifikat', '3 sertifikat', '4 sertifikat'];
-    const labelText = val <= 4 ? (labels[val] || val + ' sertifikat') : val + ' sertifikat';
-    document.getElementById(`sertif-label-${altId}`).textContent = labelText;
-
-    // Update summary header
-    document.getElementById(`summary-${altId}-sertif`).textContent = val + ' sertifikat';
-
-    // Update preset buttons highlight
-    [0, 1, 2, 3, 5, 10].forEach(p => {
-        const btn = document.getElementById(`preset-${altId}-${p}`);
-        if (!btn) return;
-        if (p === val) {
-            btn.style.background = 'rgba(99,102,241,0.15)';
-            btn.style.borderColor = 'var(--primary)';
-            btn.style.color = 'var(--primary-light)';
-        } else {
-            btn.style.background = 'var(--bg-dark)';
-            btn.style.borderColor = 'var(--border)';
-            btn.style.color = 'var(--text-secondary)';
-        }
-    });
-}
-
-// Validasi sebelum submit
-document.getElementById('penilaianForm')?.addEventListener('submit', function(e) {
-    const minatInputs = document.querySelectorAll('[id^="minat-val-"]');
-    let allFilled = true;
-    minatInputs.forEach(inp => {
-        if (!inp.value || inp.value == 0) {
-            allFilled = false;
-            const altId = inp.id.replace('minat-val-', '');
-            document.getElementById(`card-${altId}`).scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-
-    if (!allFilled) {
-        e.preventDefault();
-        alert('Pastikan semua tingkat minat (⭐) sudah dipilih untuk setiap jalur karir!');
+function handleMinat2Change(id) {
+    if (id === minat1Val) {
+        document.getElementById('minatWarning').style.display = 'block';
+        document.querySelector(`input[name="minat_2"][value="${id}"]`).checked = false;
+        return;
     }
+    document.getElementById('minatWarning').style.display = 'none';
+    minat2Val = id;
+    syncMinatStyles();
+}
+
+// ===== Count Options (Proyek & Sertifikasi) =====
+function selectCount(lbl, name) {
+    const group = lbl.closest('div');
+    group.querySelectorAll('.count-option').forEach(l => l.classList.remove('count-selected'));
+    lbl.classList.add('count-selected');
+    lbl.querySelector('input').checked = true;
+}
+
+// ===== Form Validation =====
+document.getElementById('kuisionerForm').addEventListener('submit', function(e) {
+    const m1 = document.querySelector('input[name="minat_1"]:checked');
+    const m2 = document.querySelector('input[name="minat_2"]:checked');
+    const pr = document.querySelector('input[name="proyek"]:checked');
+    const sf = document.querySelector('input[name="sertifikasi"]:checked');
+    const msgs = [];
+    if (!m1) msgs.push('⭐ Pilih Minat Pilihan Pertama');
+    if (!m2) msgs.push('🔹 Pilih Minat Pilihan Kedua');
+    if (!pr) msgs.push('📁 Pilih jumlah proyek mandiri');
+    if (!sf) msgs.push('📜 Pilih jumlah sertifikasi');
+    if (msgs.length) { e.preventDefault(); alert('Harap lengkapi:\n• ' + msgs.join('\n• ')); }
 });
 </script>
 @endsection
