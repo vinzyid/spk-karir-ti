@@ -517,6 +517,7 @@
     <aside class="sidebar" id="sidebar">
         <div style="padding: 24px 20px; border-bottom: 1px solid var(--border);">
             <div class="sidebar-logo">🎓 SPK Karir TI</div>
+            <div style="font-size:0.68rem;color:var(--text-secondary);margin-top:2px;letter-spacing:0.3px;">Teknologi Informasi · UNY</div>
             <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Decision Support System</div>
         </div>
 

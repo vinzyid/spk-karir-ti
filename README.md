@@ -1,6 +1,6 @@
-# SPK Rekomendasi Karir Mahasiswa TI
+# SPK Rekomendasi Karir Mahasiswa TI UNY
 
-> **Sistem Pendukung Keputusan** berbasis web untuk membantu mahasiswa Teknologi Informasi menentukan jalur karir yang paling sesuai menggunakan metode **AHP + TOPSIS**.
+> **Sistem Pendukung Keputusan** berbasis web yang dikembangkan khusus untuk mahasiswa **Program Studi Teknologi Informasi, Universitas Negeri Yogyakarta (UNY)**, menggunakan metode **AHP + TOPSIS** untuk merekomendasikan jalur karir IT yang paling sesuai.
 
 ---
 

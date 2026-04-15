@@ -351,7 +351,7 @@
 
 <!-- Navbar -->
 <nav class="navbar">
-    <div class="nav-logo">🎓 SPK Karir TI</div>
+    <div class="nav-logo">🎓 SPK Karir TI <span style="font-size:0.65rem;opacity:0.7;font-weight:400;letter-spacing:0.5px;">UNY</span></div>
     <div class="nav-links">
         <a href="#features">Fitur</a>
         <a href="#careers">Karir</a>
@@ -373,7 +373,7 @@
     <div class="hero-content">
         <div class="hero-text">
             <h1>Temukan <span>Karir Ideal</span> di Dunia Teknologi</h1>
-            <p>Sistem Pendukung Keputusan berbasis metode AHP dan TOPSIS untuk membantu mahasiswa Teknologi Informasi menemukan jalur karir yang tepat sesuai kemampuan dan minat.</p>
+            <p>Sistem Pendukung Keputusan berbasis metode <strong>AHP</strong> dan <strong>TOPSIS</strong> untuk membantu mahasiswa <strong>Teknologi Informasi Universitas Negeri Yogyakarta</strong> menemukan jalur karir yang tepat sesuai kemampuan dan minat.</p>
             <div class="hero-buttons">
                 @auth
                     <a href="{{ route('dashboard') }}" class="nav-btn" style="padding: 14px 36px; font-size: 1rem;">
@@ -584,7 +584,7 @@
 
 <!-- Footer -->
 <footer class="footer">
-    <p>© {{ date('Y') }} SPK Karir TI — Sistem Pendukung Keputusan Rekomendasi Karir Mahasiswa</p>
+    <p>© {{ date('Y') }} SPK Karir TI — Sistem Pendukung Keputusan Rekomendasi Karir<br>Mahasiswa Teknologi Informasi · <strong>Universitas Negeri Yogyakarta</strong></p>
     <p style="margin-top: 8px; font-size: 0.75rem;">Dibangun dengan Laravel, metode AHP & TOPSIS</p>
 </footer>
 
