@@ -10,7 +10,7 @@ class KriteriaController extends Controller
 {
     public function index()
     {
-        $kriteria = Kriteria::orderBy('kode')->get();
+        $kriteria = Kriteria::where('kode', 'not like', 'MK%')->orderBy('kode')->get();
         $totalBobot = $kriteria->sum('bobot');
         return view('admin.kriteria.index', compact('kriteria', 'totalBobot'));
     }

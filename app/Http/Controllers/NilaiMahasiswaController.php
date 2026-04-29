@@ -13,7 +13,7 @@ class NilaiMahasiswaController extends Controller
     public function create()
     {
         $user = auth()->user();
-        $mataKuliah = Kriteria::orderBy('kode')->get();
+        $mataKuliah = Kriteria::where('kode', 'like', 'MK%')->orderBy('kode')->get();
         
         // Ambil nilai yang sudah diisi
         $nilaiTersimpan = NilaiMahasiswa::where('user_id', $user->id)

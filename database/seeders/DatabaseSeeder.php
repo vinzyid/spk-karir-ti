@@ -10,7 +10,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminSeeder::class,
-            MataKuliahSeeder::class,  // Mata kuliah (kriteria)
+            KriteriaSeeder::class,     // Kriteria AHP (C1-C4) beserta bobot
+            MataKuliahSeeder::class,   // Mata kuliah (kriteria)
             AlternatifSeeder::class,   // Karir
             BobotKarirSeeder::class,   // Bobot mata kuliah untuk setiap karir
         ]);
