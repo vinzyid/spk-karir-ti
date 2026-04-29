@@ -23,7 +23,7 @@ class DashboardController extends Controller
             'semuaHasil' => [],
             'chartLabels' => [],
             'chartData' => [],
-            'kriteria' => Kriteria::orderBy('kode')->get(),
+            'kriteria' => Kriteria::where('kode', 'like', 'MK%')->orderBy('kode')->get(),
         ];
 
         if ($mahasiswa) {

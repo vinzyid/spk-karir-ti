@@ -6,12 +6,12 @@
 @section('content')
 <!-- Progress Steps -->
 <div class="card fade-in" style="margin-bottom: 28px; padding: 28px;">
-    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-        <div>
+    <div class="progress-card-inner" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div style="min-width: 0;">
             <h3 style="font-weight: 700; margin-bottom: 4px;">📋 Progress Anda</h3>
             <p style="font-size: 0.85rem; color: var(--text-secondary);">Langkah-langkah menuju rekomendasi karir</p>
         </div>
-        <div class="step-indicator">
+        <div class="step-indicator" style="flex-shrink: 0;">
             <div class="step">
                 <div class="step-circle {{ $hasMahasiswa ? 'completed' : 'active' }}">
                     @if($hasMahasiswa) ✓ @else 1 @endif
@@ -173,6 +173,15 @@
     </div>
     @endif
 </div>
+@endsection
+
+@section('styles')
+<style>
+@media (max-width: 768px) {
+    .step-indicator .step span { font-size: 0.72rem; }
+    .stat-number { font-size: 1.4rem !important; }
+}
+</style>
 @endsection
 
 @section('scripts')

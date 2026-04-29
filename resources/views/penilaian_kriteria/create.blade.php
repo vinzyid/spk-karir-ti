@@ -209,7 +209,7 @@ $pilihanSertif = ['Belum Ada'=>0,'1'=>1,'2'=>2,'3'=>3,'4'=>4,'5'=>5,'Lebih dari 
                 <p style="color:var(--text-secondary);font-size:0.78rem;margin:2px 0 0;">Jumlah sertifikat IT atau pengalaman kerja/magang</p>
             </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" class="sertif-grid">
             @php $sertifOpts = ['Belum Ada'=>0,'1 Sertifikat'=>1,'2 Sertifikat'=>2,'3 Sertifikat'=>3,'4 Sertifikat'=>4,'5 Sertifikat'=>5,'Lebih dari 5'=>6]; @endphp
             @foreach($sertifOpts as $label => $val)
             <label class="count-option {{ ($savedSertifikasi ?? -1) == $val ? 'count-selected' : '' }}" onclick="selectCount(this, 'sertifikasi')">
@@ -258,6 +258,21 @@ $pilihanSertif = ['Belum Ada'=>0,'1'=>1,'2'=>2,'3'=>3,'4'=>4,'5'=>5,'Lebih dari 
 
 {{-- CSS --}}
 <style>
+/* ====== Mobile Responsive ====== */
+@media (max-width: 768px) {
+    #proyekGrid, .sertif-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+    .count-label { font-size: 0.6rem; }
+    .karir-nama { font-size: 0.8rem; }
+    .chip-inner { font-size: 0.78rem; padding: 5px 10px; }
+}
+@media (max-width: 480px) {
+    #proyekGrid, .sertif-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
 /* ====== Skill Chips ====== */
 .skill-chip { display:inline-flex; cursor:pointer; }
 .skill-chip input { display:none; }

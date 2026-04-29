@@ -20,6 +20,7 @@
     <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.3/dist/lottie-player.js"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @yield('styles')
 
     <style>
         * { font-family: 'Inter', sans-serif; }
@@ -44,6 +45,7 @@
         body {
             background: var(--bg-dark);
             color: var(--text-primary);
+            display: flex;
         }
 
         /* Sidebar */
@@ -51,12 +53,13 @@
             background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
             border-right: 1px solid var(--border);
             width: 260px;
-            min-height: 100vh;
-            position: fixed;
-            left: 0;
+            height: 100vh;
+            position: sticky;
             top: 0;
+            flex-shrink: 0;
             z-index: 40;
             transition: transform 0.3s ease;
+            overflow-y: auto;
         }
 
         .sidebar-logo {
@@ -114,8 +117,11 @@
 
         /* Main Content */
         .main-content {
-            margin-left: 260px;
+            flex-grow: 1;
             min-height: 100vh;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Top Navbar */
@@ -445,9 +451,12 @@
         .sidebar-overlay.active { display: block; }
 
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
+            .sidebar { 
+                position: fixed;
+                transform: translateX(-100%); 
+            }
             .sidebar.open { transform: translateX(0); }
-            .main-content { margin-left: 0; }
+            .main-content { min-width: 0; max-width: 100vw; }
             .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
             .top-navbar { padding: 12px 16px; }
             .top-navbar .user-name { display: none; }
@@ -649,7 +658,7 @@
         </header>
 
         <!-- Page Content -->
-        <main style="padding: 32px;">
+        <main style="padding: 32px; flex: 1;">
             <!-- Flash Messages -->
             @if(session('success'))
                 <div class="alert alert-success">

@@ -4,7 +4,16 @@
 @section('subtitle', 'Manage bobot dan kriteria AHP')
 
 @section('content')
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+@section('styles')
+<style>
+@media (max-width: 640px) {
+    .th-hide, .td-hide { display: none; }
+    .table-header-action { flex-direction: column; align-items: flex-start !important; gap: 12px; }
+}
+</style>
+@endsection
+
+<div class="table-header-action" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
     <div>
         <p style="color: var(--text-secondary); font-size: 0.9rem;">
             Total Bobot: <strong style="color: {{ abs($totalBobot - 1) < 0.01 ? 'var(--success)' : 'var(--danger)' }};">{{ number_format($totalBobot, 4) }}</strong>
@@ -29,8 +38,8 @@
                     <th>Kode</th>
                     <th>Nama Kriteria</th>
                     <th>Bobot</th>
-                    <th>Persentase</th>
-                    <th>Tipe</th>
+                    <th class="th-hide">Persentase</th>
+                    <th class="th-hide">Tipe</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -41,7 +50,7 @@
                     <td><span class="badge badge-primary">{{ $k->kode }}</span></td>
                     <td style="font-weight: 600;">{{ $k->nama }}</td>
                     <td style="font-family: monospace; font-weight: 600;">{{ number_format($k->bobot, 4) }}</td>
-                    <td>
+                    <td class="td-hide">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <div style="flex: 1; height: 6px; background: rgba(99,102,241,0.1); border-radius: 3px; overflow: hidden; max-width: 100px;">
                                 <div style="width: {{ $k->bobot * 100 }}%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px;"></div>
@@ -49,7 +58,7 @@
                             <span style="font-size: 0.85rem;">{{ number_format($k->bobot * 100, 2) }}%</span>
                         </div>
                     </td>
-                    <td><span class="badge {{ $k->tipe == 'benefit' ? 'badge-success' : 'badge-warning' }}">{{ ucfirst($k->tipe) }}</span></td>
+                    <td class="td-hide"><span class="badge {{ $k->tipe == 'benefit' ? 'badge-success' : 'badge-warning' }}">{{ ucfirst($k->tipe) }}</span></td>
                     <td>
                         <div style="display: flex; gap: 8px;">
                             <a href="{{ route('admin.kriteria.edit', $k) }}" class="btn-secondary btn-sm">Edit</a>

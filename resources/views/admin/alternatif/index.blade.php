@@ -4,7 +4,16 @@
 @section('subtitle', 'Manage pilihan karir IT')
 
 @section('content')
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+@section('styles')
+<style>
+@media (max-width: 640px) {
+    .td-desc { display: none; }
+    .th-desc { display: none; }
+}
+</style>
+@endsection
+
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
     <p style="color: var(--text-secondary); font-size: 0.9rem;">
         Total: <strong>{{ $alternatifs->count() }}</strong> alternatif karir
     </p>
@@ -20,7 +29,7 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Karir</th>
-                    <th>Deskripsi</th>
+                    <th class="th-desc">Deskripsi</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -34,7 +43,7 @@
                         @endphp
                         {{ $icons[$alt->nama] ?? '💼' }} {{ $alt->nama }}
                     </td>
-                    <td style="font-size: 0.85rem; color: var(--text-secondary); max-width: 400px;">
+                    <td class="td-desc" style="font-size: 0.85rem; color: var(--text-secondary); max-width: 400px;">
                         {{ Str::limit($alt->deskripsi, 100) }}
                     </td>
                     <td>
