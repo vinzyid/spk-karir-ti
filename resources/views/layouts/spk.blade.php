@@ -60,11 +60,22 @@
         }
 
         .sidebar-logo {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-logo-text { line-height: 1.3; }
+        .sidebar-logo-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.2px;
+        }
+        .sidebar-logo-sub {
+            font-size: 0.58rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
         }
 
         .sidebar-link {
@@ -516,9 +527,14 @@
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div style="padding: 24px 20px; border-bottom: 1px solid var(--border);">
-            <div class="sidebar-logo">🎓 SPK Karir TI</div>
-            <div style="font-size:0.68rem;color:var(--text-secondary);margin-top:2px;letter-spacing:0.3px;">Teknologi Informasi · UNY</div>
-            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Decision Support System</div>
+            <div class="sidebar-logo">
+                <img src="{{ asset('images/logo-uny.png') }}" alt="Logo UNY" style="width:38px;height:38px;object-fit:contain;">
+                <div class="sidebar-logo-text">
+                    <div class="sidebar-logo-title">SPK Karir TI</div>
+                    <div class="sidebar-logo-sub">Universitas Negeri Yogyakarta</div>
+                    <div class="sidebar-logo-sub">Sistem Pendukung Keputusan</div>
+                </div>
+            </div>
         </div>
 
         <nav style="padding: 12px 0;">

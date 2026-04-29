@@ -51,13 +51,23 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .logo {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-            font-size: 2rem;
-            text-align: center;
-            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .logo-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-top: 14px;
+            margin-bottom: 4px;
+        }
+        .logo-inst {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
         .subtitle {
             text-align: center;
@@ -131,7 +141,11 @@
 </head>
 <body>
     <div class="auth-container">
-        <div class="logo">🎓 SPK Karir TI</div>
+        <div class="logo">
+            <img src="{{ asset('images/logo-uny.png') }}" alt="Logo UNY" style="width:72px;height:72px;object-fit:contain;">
+            <div class="logo-title">SPK Karir TI</div>
+            <div class="logo-inst">Universitas Negeri Yogyakarta</div>
+        </div>
         <div class="subtitle">Sistem Pendukung Keputusan Rekomendasi Karir</div>
         
         <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 24px; text-align: center;">Buat Akun Baru</h2>

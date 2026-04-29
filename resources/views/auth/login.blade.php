@@ -56,13 +56,23 @@
             text-align: center;
             margin-bottom: 32px;
         }
+        .auth-logo-icon {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
         .auth-logo-text {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-            font-size: 2rem;
-            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .auth-logo-inst {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
         }
         .auth-subtitle {
             color: var(--text-secondary);
@@ -164,7 +174,11 @@
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-logo">
-                <div class="auth-logo-text">🎓 SPK Karir TI</div>
+                <div class="auth-logo-icon">
+                    <img src="{{ asset('images/logo-uny.png') }}" alt="Logo UNY" style="width:72px;height:72px;object-fit:contain;">
+                </div>
+                <div class="auth-logo-text">SPK Karir TI</div>
+                <div class="auth-logo-inst">Universitas Negeri Yogyakarta</div>
                 <div class="auth-subtitle">Sistem Pendukung Keputusan Rekomendasi Karir</div>
             </div>
 

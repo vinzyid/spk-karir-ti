@@ -40,9 +40,22 @@
         }
 
         .nav-logo {
-            font-size: 1.5rem; font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .nav-logo-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.2;
+        }
+        .nav-logo-sub {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
         }
 
         .nav-links { display: flex; gap: 32px; align-items: center; }
@@ -351,7 +364,13 @@
 
 <!-- Navbar -->
 <nav class="navbar">
-    <div class="nav-logo">🎓 SPK Karir TI <span style="font-size:0.65rem;opacity:0.7;font-weight:400;letter-spacing:0.5px;">UNY</span></div>
+    <div class="nav-logo">
+        <img src="{{ asset('images/logo-uny.png') }}" alt="Logo UNY" style="width:34px;height:34px;object-fit:contain;">
+        <div>
+            <div class="nav-logo-title">SPK Karir TI</div>
+            <div class="nav-logo-sub">Universitas Negeri Yogyakarta</div>
+        </div>
+    </div>
     <div class="nav-links">
         <a href="#features">Fitur</a>
         <a href="#careers">Karir</a>
