@@ -335,19 +335,27 @@
         }
 
         @media (max-width: 768px) {
-            .navbar { padding: 16px 24px; }
+            .navbar { padding: 14px 20px; }
             .nav-links { display: none; }
-            .hero { padding: 100px 24px 60px; }
+            .nav-btn-hide-sm { display: none; }
+            .hero { padding: 90px 20px 50px; }
             .hero-content { grid-template-columns: 1fr; text-align: center; }
-            .hero-text h1 { font-size: 2.2rem; }
-            .hero-buttons { justify-content: center; }
+            .hero-text h1 { font-size: 1.9rem; }
+            .hero-buttons { justify-content: center; flex-wrap: wrap; }
             .hero-visual { display: none; }
-            .stats-row { justify-content: center; }
-            .section { padding: 60px 24px; }
-            .section-title h2 { font-size: 1.8rem; }
+            .stats-row { justify-content: center; flex-wrap: wrap; gap: 16px; }
+            .section { padding: 50px 20px; }
+            .section-title h2 { font-size: 1.6rem; }
             .features-grid, .careers-grid, .method-grid { grid-template-columns: 1fr; }
-            .cta-section { padding: 60px 24px; }
+            .cta-section { padding: 50px 20px; }
             .cta-section::before { margin: 0; }
+            .nav-logo-title { font-size: 0.9rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h1 { font-size: 1.6rem; }
+            .section-title h2 { font-size: 1.4rem; }
+            .nav-btn, .nav-btn-outline { padding: 8px 16px; font-size: 0.85rem; }
         }
 
         /* Scroll animations */
@@ -376,12 +384,12 @@
         <a href="#careers">Karir</a>
         <a href="#method">Metode</a>
     </div>
-    <div style="display: flex; gap: 12px;">
+    <div style="display: flex; gap: 12px; align-items: center;">
         @auth
             <a href="{{ route('dashboard') }}" class="nav-btn">Dashboard</a>
         @else
-            <a href="{{ route('login') }}" class="nav-btn-outline">Masuk</a>
-            <a href="{{ route('register') }}" class="nav-btn">Daftar Gratis</a>
+            <a href="{{ route('login') }}" class="nav-btn-outline nav-btn-hide-sm">Masuk</a>
+            <a href="{{ route('register') }}" class="nav-btn">Daftar</a>
         @endauth
     </div>
 </nav>

@@ -433,11 +433,33 @@
             .grid-3 { grid-template-columns: repeat(2, 1fr); }
         }
 
+        /* Sidebar overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 35;
+            backdrop-filter: blur(2px);
+        }
+        .sidebar-overlay.active { display: block; }
+
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
             .main-content { margin-left: 0; }
             .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+            .top-navbar { padding: 12px 16px; }
+            .top-navbar .user-name { display: none; }
+            main { padding: 16px !important; }
+            .card { padding: 16px; }
+            .stat-card { padding: 16px; }
+            .stat-number { font-size: 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; gap: 12px; }
+            .btn-primary, .btn-secondary { padding: 8px 16px; font-size: 0.85rem; }
         }
 
         /* Progress Steps */
@@ -593,13 +615,16 @@
         </nav>
     </aside>
 
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
     <!-- Main Content -->
     <div class="main-content">
         <!-- Top Navbar -->
         <header class="top-navbar">
             <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div style="display: flex; align-items: center; gap: 16px;">
-                    <button onclick="document.getElementById('sidebar').classList.toggle('open')" style="display: none; background: none; border: none; color: var(--text-primary); cursor: pointer;" class="mobile-menu-btn">
+                    <button onclick="toggleSidebar()" style="display: none; background: none; border: none; color: var(--text-primary); cursor: pointer;" class="mobile-menu-btn">
                         <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
                     <div>
@@ -607,8 +632,8 @@
                         <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">@yield('subtitle', '')</p>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <div style="text-align: right;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="text-align: right;" class="user-name">
                         <div style="font-weight: 600; font-size: 0.9rem;">{{ auth()->user()->name }}</div>
                         <div style="font-size: 0.75rem; color: var(--text-secondary);">
                             <span class="badge {{ auth()->user()->isAdmin() ? 'badge-warning' : 'badge-primary' }}">
@@ -616,7 +641,7 @@
                             </span>
                         </div>
                     </div>
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem;">
+                    <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0;">
                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
                 </div>
@@ -654,6 +679,25 @@
             .mobile-menu-btn { display: block !important; }
         }
     </style>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+        // Tutup sidebar saat link diklik di mobile
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) closeSidebar();
+            });
+        });
+    </script>
 
     @yield('scripts')
 </body>

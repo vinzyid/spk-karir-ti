@@ -52,6 +52,11 @@
             padding: 48px 40px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
+        @media (max-width: 480px) {
+            body { padding: 16px; align-items: flex-start; padding-top: 32px; }
+            .auth-card { padding: 32px 24px; border-radius: 16px; }
+            .auth-logo-icon img { width: 56px; height: 56px; }
+        }
         .auth-logo {
             text-align: center;
             margin-bottom: 32px;

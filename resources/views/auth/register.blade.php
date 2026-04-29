@@ -46,6 +46,10 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             animation: fadeIn 0.5s ease;
         }
+        @media (max-width: 480px) {
+            body { padding: 16px; align-items: flex-start; padding-top: 24px; }
+            .auth-container { padding: 28px 20px; border-radius: 16px; }
+        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
