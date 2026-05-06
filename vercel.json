@@ -33,5 +33,15 @@
         }
     ],
     "outputDirectory": "public",
-    "buildCommand": "npm run build"
+    "buildCommand": "npm run build",
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "APP_URL": "https://spk-karir-ti.vercel.app",
+        "CACHE_DRIVER": "array",
+        "SESSION_DRIVER": "cookie",
+        "QUEUE_CONNECTION": "sync",
+        "LOG_CHANNEL": "stderr",
+        "VIEW_COMPILED_PATH": "/tmp"
+    }
 }
