@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AlternatifController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\KriteriaController;
+use App\Http\Controllers\Admin\MahasiswaController as AdminMahasiswaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HasilController;
 use App\Http\Controllers\LandingController;
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('kriteria', KriteriaController::class);
         Route::resource('alternatif', AlternatifController::class);
+        Route::get('/mahasiswa', [AdminMahasiswaController::class, 'index'])->name('mahasiswa.index');
+        Route::get('/mahasiswa/{mahasiswa}', [AdminMahasiswaController::class, 'show'])->name('mahasiswa.show');
     });
 });
 
