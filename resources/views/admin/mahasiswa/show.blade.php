@@ -37,8 +37,14 @@
         <div>
             <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Skill Teknis</div>
             <div style="font-weight: 600;">
-                @if($user->saved_skills && count($user->saved_skills) > 0)
-                    @foreach($user->saved_skills as $skill)
+                @php
+                    $skills = $user->saved_skills;
+                    if (is_string($skills)) {
+                        $skills = json_decode($skills, true) ?? [];
+                    }
+                @endphp
+                @if(is_array($skills) && count($skills) > 0)
+                    @foreach($skills as $skill)
                         <span class="badge badge-primary" style="margin: 2px;">{{ $skill }}</span>
                     @endforeach
                 @else
