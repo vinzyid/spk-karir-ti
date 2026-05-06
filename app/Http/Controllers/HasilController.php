@@ -39,6 +39,13 @@ class HasilController extends Controller
     public function detail()
     {
         $user = auth()->user();
+
+        // Hanya admin yang boleh melihat detail perhitungan
+        if (!$user->isAdmin()) {
+            return redirect()->route('hasil.index')
+                ->with('warning', 'Halaman ini hanya dapat diakses oleh admin.');
+        }
+
         $mahasiswa = $user->mahasiswa;
 
         if (!$mahasiswa) {

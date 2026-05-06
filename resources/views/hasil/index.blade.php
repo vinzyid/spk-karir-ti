@@ -111,7 +111,9 @@
                 <tr>
                     <th style="width: 60px;">Rank</th>
                     <th>Jalur Karir</th>
+                    @if(auth()->user()->isAdmin())
                     <th style="text-align: center;">Skor TOPSIS</th>
+                    @endif
                     <th style="text-align: center; min-width: 160px;">Persentase Kesesuaian</th>
                     <th style="text-align: center;">Status</th>
                 </tr>
@@ -139,11 +141,13 @@
                             </div>
                         </div>
                     </td>
+                    @if(auth()->user()->isAdmin())
                     <td style="text-align: center;">
                         <span style="font-weight: 700; font-family: monospace; font-size: 0.9rem; color: {{ $h->ranking <= 3 ? 'var(--primary-light)' : 'var(--text-primary)' }};">
                             {{ number_format((float)$h->skor, 6) }}
                         </span>
                     </td>
+                    @endif
                     <td>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <div style="flex: 1; height: 8px; background: rgba(99,102,241,0.1); border-radius: 4px; overflow: hidden; min-width: 80px;">
@@ -170,9 +174,11 @@
 
 {{-- ===== ACTION BUTTONS ===== --}}
 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+    @if(auth()->user()->isAdmin())
     <a href="{{ route('hasil.detail') }}" class="btn-primary">
         🧮 Detail Perhitungan TOPSIS
     </a>
+    @endif
     <a href="{{ route('penilaian-kriteria.create') }}" class="btn-secondary">
         ✏️ Ubah Penilaian Karir
     </a>
