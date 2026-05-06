@@ -41,7 +41,7 @@
                 <select name="prodi" class="form-select" required>
                     <option value="">-- Pilih Program Studi --</option>
                     @php
-                        $prodiList = ['Teknologi Informasi', 'Teknik Informatika', 'Sistem Informasi', 'Ilmu Komputer', 'Teknik Komputer'];
+                        $prodiList = ['Teknologi Informasi'];
                         $currentProdi = old('prodi', $mahasiswa?->prodi ?? '');
                     @endphp
                     @foreach($prodiList as $p)
